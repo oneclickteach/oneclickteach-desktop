@@ -29,11 +29,9 @@ export const Titlebar = () => {
 
   return (
     <div className={`window-titlebar ${wcontext?.platform ? `platform-${wcontext.platform}` : ''}`}>
-      {wcontext?.platform === 'win32' && (
-        <div className="window-titlebar-icon">
-          <img src={icon} />
-        </div>
-      )}
+      <div className="window-titlebar-icon">
+        <img src={icon} />
+      </div>
 
       <div
         className="window-titlebar-title"
@@ -43,7 +41,7 @@ export const Titlebar = () => {
         {title}
       </div>
       {menusVisible && <TitlebarMenu />}
-      {wcontext?.platform === 'win32' && <TitlebarControls />}
+      <TitlebarControls />
     </div>
   )
 }

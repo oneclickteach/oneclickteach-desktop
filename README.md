@@ -95,3 +95,10 @@ const Button = () => (
 
 ```
 <!-- prettier-ignore-end -->
+
+## Titlebar Menu Toggle
+
+The titlebar menu can be toggled using:
+
+- **Windows**: Press the `Alt` key
+- **macOS**: Press the `Option (⌥)` key

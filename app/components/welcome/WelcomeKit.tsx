@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import EraShape from './EraShape'
 import EraContent from './contents/EraContent'
 import ElectronContent from './contents/ElectronContent'
@@ -7,7 +7,6 @@ import ViteContent from './contents/ViteContent'
 import ShadContent from './contents/ShadContent'
 import TailwindContent from './contents/TailwindContent'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Badge } from '../ui/badge'
 import './styles.css'
 
 export default function WelcomeKit() {
@@ -60,30 +59,7 @@ export default function WelcomeKit() {
         </AnimatePresence>
         <EraShape onPathHover={handlePathHover} onPathReset={handlePathReset} />
       </div>
-      <div className="flex justify-center items-center gap-4 opacity-50 hover:opacity-80 transition-opacity">
-        <DarkModeToggle />
-      </div>
     </div>
   )
 }
 
-const DarkModeToggle = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
-  useEffect(() => {
-    setIsDarkMode(document.documentElement.classList.contains('dark'))
-  }, [])
-
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle('dark')
-    setIsDarkMode(!isDarkMode)
-  }
-
-  return (
-    <div className="flex justify-center items-center gap-2 text-sm cursor-pointer">
-      <Badge variant="secondary" onClick={toggleDarkMode}>
-        {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-      </Badge>
-    </div>
-  )
-}
