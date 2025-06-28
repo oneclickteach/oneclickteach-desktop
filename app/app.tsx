@@ -1,5 +1,9 @@
-import WelcomeKit from '@/app/components/welcome/WelcomeKit'
+import SetupWizard from '@/app/components/setup-wizard/SetupWizard'
 
 export default function App() {
-  return <WelcomeKit />
+  return (
+    <div className="h-full w-full p-10">
+      <SetupWizard />
+    </div>
+  )
 }

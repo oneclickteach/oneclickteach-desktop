@@ -10,7 +10,7 @@ const EraContent = () => {
       <h2 className="flex items-center gap-4">
         One Click Teach App
         <div className="p-1 rounded-md bg-primary/10">
-          <img src="res://icons/era.svg" className="w-4 h-4" />
+          <img src="res://icons/OneClickTeach_Circle.svg" className="w-4 h-4" />
         </div>
       </h2>
       <p>

@@ -1,0 +1,18 @@
+/* Custom scrollbar for window content */
+.wizard-content::-webkit-scrollbar {
+  width: var(--window-scrollbar-width);
+}
+
+.wizard-content::-webkit-scrollbar-track {
+  background-color: var(--window-c-scrollbar-track);
+}
+
+.wizard-content::-webkit-scrollbar-thumb {
+  background-color: var(--window-c-scrollbar-thumb);
+  border-radius: 4px;
+  border: 3px solid var(--window-c-scrollbar-track);
+}
+
+.wizard-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--window-c-scrollbar-thumb-hover);
+}
