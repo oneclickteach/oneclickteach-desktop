@@ -10,11 +10,11 @@ import StepInstall from './steps/StepInstall'
 import './styles.css'
 
 const steps = [
-  { id: 'domain', label: 'Domain' },
-  { id: 'dns', label: 'DNS & CDN' },
-  { id: 'ssl', label: 'SSL' },
-  { id: 'vps', label: 'Server' },
-  { id: 'install', label: 'Install' },
+  { id: 'vps', label: 'Server', isEnabled: true },
+  { id: 'install', label: 'Install', isEnabled: true },
+  { id: 'domain', label: 'Domain', isEnabled: true },
+  { id: 'dns', label: 'DNS & CDN', isEnabled: true },
+  { id: 'ssl', label: 'SSL', isEnabled: true },
 ]
 
 export default function SetupWizard() {
@@ -39,7 +39,7 @@ export default function SetupWizard() {
       <div className='wizard-content h-full overflow-y-auto'>
         <Tabs.Root value={currentTab} onValueChange={setCurrentTab} className="w-full">
           <Tabs.List className="flex space-x-4 border-b border-muted pb-2">
-            {steps.map((step) => (
+            {steps.filter((step) => step.isEnabled).map((step) => (
               <Tabs.Trigger
                 key={step.id}
                 value={step.id}

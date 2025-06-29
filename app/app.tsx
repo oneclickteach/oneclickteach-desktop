@@ -1,9 +1,9 @@
-import SetupWizard from '@/app/components/setup-wizard/SetupWizard'
+import Setup from '@/app/components/setup/Setup'
 
 export default function App() {
   return (
     <div className="h-full w-full p-10">
-      <SetupWizard />
+      <Setup />
     </div>
   )
 }
