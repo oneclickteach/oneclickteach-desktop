@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, shell, safeStorage } from 'electron'
+import { BrowserWindow, ipcMain, shell, safeStorage, nativeTheme } from 'electron'
 import os from 'os'
 import { Storage } from '../storage'
 
@@ -52,6 +52,10 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
   handleIPC('web-toggle-fullscreen', () => mainWindow.setFullScreen(!mainWindow.fullScreen))
   handleIPC('web-open-url', (_e, url) => shell.openExternal(url))
 
+  handleIPC('get-system-theme', () => {
+    return nativeTheme.shouldUseDarkColors
+  })
+
   // Storage IPC handlers
   handleIPC('storage-set', async (_e, key: string, value: any) => {
     try {
@@ -60,7 +64,7 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
 
       // Encrypt the data
       const encryptedData = await safeStorage.encryptString(data)
-      
+
       // Store the encrypted data in storage
       await storage.setItem(key, encryptedData.toString('base64'))
       return true

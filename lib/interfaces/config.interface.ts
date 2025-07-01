@@ -1,3 +1,5 @@
+import { DarkMode } from "../enums"
+
 export interface ServerConfigInterface {
   host: string
   port: number
@@ -12,5 +14,6 @@ export interface LocalInterface {
 }
 
 export interface CommonConfigInterface {
-  local: LocalInterface
+  local: LocalInterface,
+  darkMode: DarkMode
 }

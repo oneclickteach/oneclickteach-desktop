@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { CommonConfigInterface, LocalInterface } from '@/lib/interfaces'
 import { STORAGE_LOCALE_KEY } from '@/lib/constants/storeage-key.constant'
+import { Badge } from '../ui/badge'
+import { DarkMode } from '@/lib/enums'
 
 export default function Common() {
   const [local, setLocal] = useState<LocalInterface>({
@@ -8,6 +10,7 @@ export default function Common() {
     flag: '',
     code: '',
   })
+  const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -16,8 +19,19 @@ export default function Common() {
     const loadConfig = async () => {
       try {
         const config = await window.api.invoke('storage-get', STORAGE_LOCALE_KEY)
+        const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
+
         if (config) {
           setLocal(config.local)
+          setDarkMode(config.darkMode)
+          if (config.darkMode === DarkMode.DARK || (config.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)) {
+            document.documentElement.classList.add('dark')
+          } else if (
+            config.darkMode === DarkMode.LIGHT ||
+            (config.darkMode === DarkMode.SYSTEM && !systemThemeIsDarkMode)
+          ) {
+            document.documentElement.classList.remove('dark')
+          }
         }
       } catch (err) {
         console.error('Error loading config:', err)
@@ -29,6 +43,24 @@ export default function Common() {
     loadConfig()
   }, [])
 
+  const handleDarkMode = async () => {
+    if (darkMode === DarkMode.DARK) {
+      setDarkMode(DarkMode.LIGHT)
+      document.documentElement.classList.remove('dark')
+    } else if (darkMode === DarkMode.LIGHT) {
+      setDarkMode(DarkMode.SYSTEM)
+      const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
+      if (systemThemeIsDarkMode) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    } else {
+      setDarkMode(DarkMode.DARK)
+      document.documentElement.classList.add('dark')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
@@ -37,6 +69,7 @@ export default function Common() {
     try {
       const config: CommonConfigInterface = {
         local,
+        darkMode,
       }
 
       const success = await window.api.invoke('storage-set', STORAGE_LOCALE_KEY, config)
@@ -79,6 +112,11 @@ export default function Common() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
           </div>
+        </div>
+        <div className="text-sm cursor-pointer">
+          <Badge variant="secondary" onClick={handleDarkMode}>
+            {darkMode === DarkMode.DARK ? 'Dark Mode' : darkMode === DarkMode.LIGHT ? 'Light Mode' : 'System Mode'}
+          </Badge>
         </div>
 
         {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
