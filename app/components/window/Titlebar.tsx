@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useWindowContext } from './WindowContext'
 import { useTitlebarContext } from './TitlebarContext'
 import { TitlebarMenu } from './TitlebarMenu'
+import TitlebarConfig from './TitlebarConfig'
 
 export const Titlebar = () => {
   const { title, icon, titleCentered, menuItems } = useWindowContext().titlebar
@@ -38,7 +39,10 @@ export const Titlebar = () => {
         {...(titleCentered && { 'data-centered': true })}
         style={{ visibility: menusVisible ? 'hidden' : 'visible' }}
       >
-        {title}
+        <span className='m-2'>{title}</span>
+        <div className="window-titlebar-config">
+          <TitlebarConfig />
+        </div>
       </div>
       {menusVisible && <TitlebarMenu />}
       <TitlebarControls />

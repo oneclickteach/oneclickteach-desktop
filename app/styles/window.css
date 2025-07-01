@@ -7,6 +7,7 @@
   --window-scrollbar-width: 12px;
   --window-mac-titlebar-controls-margin: 80px;
   --window-background-transition-duration: 0.3s;
+  --window-titlebar-config-margin: 48px;
   --window-c-popup-font-weight: normal;
 
   --window-c-background: #1c1c1c;
@@ -69,6 +70,12 @@
   /* height: 100%; */
 }
 
+.window-titlebar-config {
+  -webkit-app-region: no-drag;
+  /* inset-inline-end: 48px; */
+  /* margin: 0 var(--window-titlebar-config-margin); */
+}
+
 .window-titlebar {
   display: flex;
   position: relative;
@@ -101,6 +108,10 @@
 
 .window-titlebar-title {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
   font-size: var(--window-titlebar-font-size);
   margin-left: var(--window-title-margin);
   margin-right: var(--window-title-margin);
