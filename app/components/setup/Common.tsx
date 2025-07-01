@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { CommonConfigInterface } from '@/lib/interfaces'
 import { STORAGE_LOCALE_KEY } from '@/lib/constants/storeage-key.constant'
 import { Badge } from '../ui/badge'
+import { Sun, Moon, Globe, Flag } from 'lucide-react'
 import { DarkMode, DirectionMode } from '@/lib/enums'
 import { useTranslation } from 'react-i18next'
 import { LocalInterface } from '@/lib/interfaces'
@@ -135,7 +136,14 @@ export default function Common() {
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="text-sm cursor-pointer">
-          <Badge variant="secondary" onClick={handleDarkMode}>
+          <Badge variant="secondary" onClick={handleDarkMode} className="flex items-center gap-2">
+            {darkMode === DarkMode.DARK ? (
+              <Moon className="w-4 h-4" />
+            ) : darkMode === DarkMode.LIGHT ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Globe className="w-4 h-4" />
+            )}
             {darkMode === DarkMode.DARK
               ? t('commonConfiguration.darkMode.dark')
               : darkMode === DarkMode.LIGHT
@@ -144,8 +152,19 @@ export default function Common() {
           </Badge>
         </div>
         <div className="text-sm cursor-pointer">
-          <Badge variant="secondary" onClick={handleLanguageChange}>
-            {local.name === 'en' ? t('commonConfiguration.language.en') : t('commonConfiguration.language.fa')}
+          <Badge variant="secondary" onClick={handleLanguageChange} className="flex items-center gap-2">
+            <Flag className="w-4 h-4" />
+            {local.name === 'en' ? (
+              <span className="flex items-center gap-1">
+                <span>{local.flag}</span>
+                {t('commonConfiguration.language.en')}
+              </span>
+            ) : (
+              <span className="flex items-center gap-1">
+                <span>{local.flag}</span>
+                {t('commonConfiguration.language.fa')}
+              </span>
+            )}
           </Badge>
         </div>
 
