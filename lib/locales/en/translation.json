@@ -1,0 +1,35 @@
+{
+  "common": {
+    "button": {
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "save": "Save",
+    "cancel": "Cancel",
+    "error": "Error",
+    "success": "Success",
+    "loading": "Loading...",
+    "saving": "Saving..."
+  },
+  "serverConfiguration": {
+    "title": "Server Configuration",
+    "serverHost": "Server Host",
+    "serverPort": "Server Port",
+    "serverUsername": "Username",
+    "serverPassword": "Password"
+  },
+  "commonConfiguration": {
+    "title": "Common Configuration",
+    "local": "Local",
+    "direction": "Text Direction",
+    "language": {
+      "en": "English",
+      "fa": "Persian"
+    },
+    "darkMode": {
+      "dark": "Dark Mode",
+      "light": "Light Mode",
+      "system": "System Mode"
+    }
+  }
+}

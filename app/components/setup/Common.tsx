@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react'
-import { CommonConfigInterface, LocalInterface } from '@/lib/interfaces'
+import { CommonConfigInterface } from '@/lib/interfaces'
 import { STORAGE_LOCALE_KEY } from '@/lib/constants/storeage-key.constant'
 import { Badge } from '../ui/badge'
 import { DarkMode, DirectionMode } from '@/lib/enums'
+import { useTranslation } from 'react-i18next'
+import { LocalInterface } from '@/lib/interfaces'
+import i18n from '@/lib/i18n'
 
 export default function Common() {
+  const { t } = useTranslation()
   const [local, setLocal] = useState<LocalInterface>({
-    name: '',
-    flag: '',
-    code: '',
+    name: 'en',
+    flag: 'en',
+    code: 'en',
+    direction: DirectionMode.LTR,
   })
-  const [direction, setDirection] = useState<DirectionMode>(DirectionMode.LTR)
+
   const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Initialize i18n with current language
+    i18n.changeLanguage(local.name)
+  }, [local.name])
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -24,14 +34,19 @@ export default function Common() {
 
         if (config) {
           setLocal(config.local)
-          setDirection(config.direction)
           setDarkMode(config.darkMode)
 
           // Set document language
           document.documentElement.lang = config.local.name
 
           // Set document direction
-          document.documentElement.dir = config.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
+          document.documentElement.dir = config.local.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
+
+          // Update i18n language
+          i18n.changeLanguage(config.local.name)
+
+          // Update translations
+          document.title = t('common.title')
 
           // Set dark mode class
           if (config.darkMode === DarkMode.DARK || (config.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)) {
@@ -71,23 +86,15 @@ export default function Common() {
     }
   }
 
-  const handleDirectionMode = () => {
-    if (direction === DirectionMode.LTR) {
-      setDirection(DirectionMode.RTL)
-      document.documentElement.dir = 'rtl'
-    } else {
-      setDirection(DirectionMode.LTR)
-      document.documentElement.dir = 'ltr'
-    }
-  }
-
   const handleLanguageChange = () => {
     if (local.name === 'en') {
-      setLocal({ name: 'fa', flag: '🇮🇷', code: 'fa' })
+      setLocal({ name: 'fa', flag: '🇮🇷', code: 'fa', direction: DirectionMode.RTL })
       document.documentElement.lang = 'fa'
+      document.documentElement.dir = 'rtl'
     } else {
-      setLocal({ name: 'en', flag: '🇺🇸', code: 'en' })
+      setLocal({ name: 'en', flag: '🇺🇸', code: 'en', direction: DirectionMode.LTR })
       document.documentElement.lang = 'en'
+      document.documentElement.dir = 'ltr'
     }
   }
 
@@ -99,7 +106,6 @@ export default function Common() {
     try {
       const config: CommonConfigInterface = {
         local,
-        direction,
         darkMode,
       }
 
@@ -121,42 +127,25 @@ export default function Common() {
 
   return (
     <div className="w-full h-full flex flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold mb-4">Common Configuration</h1>
+      <h1 className="text-2xl font-semibold mb-4">{t('commonConfiguration.title')}</h1>
       {isLoading && (
         <div className="flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
         </div>
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="local" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Local
-            </label>
-            <input
-              type="text"
-              id="local"
-              value={local.name}
-              onChange={(e) => setLocal({ ...local, name: e.target.value })}
-              placeholder="en"
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div>
-        </div>
         <div className="text-sm cursor-pointer">
           <Badge variant="secondary" onClick={handleDarkMode}>
-            {darkMode === DarkMode.DARK ? 'Dark Mode' : darkMode === DarkMode.LIGHT ? 'Light Mode' : 'System Mode'}
-          </Badge>
-        </div>
-        <div className="text-sm cursor-pointer">
-          <Badge variant="secondary" onClick={handleDirectionMode}>
-            {direction === DirectionMode.LTR ? 'Left To Right' : 'Right To Left'}
+            {darkMode === DarkMode.DARK
+              ? t('commonConfiguration.darkMode.dark')
+              : darkMode === DarkMode.LIGHT
+                ? t('commonConfiguration.darkMode.light')
+                : t('commonConfiguration.darkMode.system')}
           </Badge>
         </div>
         <div className="text-sm cursor-pointer">
           <Badge variant="secondary" onClick={handleLanguageChange}>
-            {local.name === 'en' ? 'English' : 'Persian'}
+            {local.name === 'en' ? t('commonConfiguration.language.en') : t('commonConfiguration.language.fa')}
           </Badge>
         </div>
 
@@ -167,7 +156,7 @@ export default function Common() {
           disabled={isSaving}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSaving ? 'Saving...' : 'Save Configuration'}
+          {isSaving ? t('common.saving') : t('common.button.save')}
         </button>
       </form>
     </div>

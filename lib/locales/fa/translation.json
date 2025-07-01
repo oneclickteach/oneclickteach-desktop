@@ -1,0 +1,35 @@
+{
+  "common": {
+    "button": {
+      "save": "ذخیره",
+      "cancel": "لغو"
+    },
+    "save": "ذخیره",
+    "cancel": "لغو",
+    "error": "خطا",
+    "success": "موفقیت",
+    "loading": "در حال بارگذاری...",
+    "saving": "در حال ذخیره..."
+  },
+  "serverConfiguration": {
+    "title": "پیکربندی سرور",
+    "serverHost": "میزبان سرور",
+    "serverPort": "پورت سرور",
+    "serverUsername": "نام کاربری",
+    "serverPassword": "رمز عبور"
+  },
+  "commonConfiguration": {
+    "title": "پیکربندی عمومی",
+    "local": "محلی",
+    "direction": "جهت متن",
+    "language": {
+      "en": "انگلیسی",
+      "fa": "فارسی"
+    },
+    "darkMode": {
+      "dark": "حالت تاریک",
+      "light": "حالت روشن",
+      "system": "حالت سیستم"
+    }
+  }
+}

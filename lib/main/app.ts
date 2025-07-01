@@ -17,7 +17,7 @@ export function createAppWindow(): void {
     icon: appIcon,
     frame: false,
     titleBarStyle: 'hiddenInset',
-    title: 'One Click Teach App',
+    title: 'One Click Teach',
     maximizable: true,
     resizable: true,
     webPreferences: {

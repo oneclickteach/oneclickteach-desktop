@@ -8,13 +8,13 @@ const EraContent = () => {
   return (
     <div>
       <h2 className="flex items-center gap-4">
-        One Click Teach App
+        One Click Teach
         <div className="p-1 rounded-md bg-primary/10">
           <img src="res://icons/OneClickTeach_Circle.svg" className="w-4 h-4" />
         </div>
       </h2>
       <p>
-        Welcome to the One Click Teach App!.
+        Welcome to the One Click Teach!.
       </p>
 
       <div className="welcome-content-steps">
@@ -44,7 +44,7 @@ const EraContent = () => {
       </div>
 
       <p className="learn-more">
-        Learn more about One Click Teach App at{' '}
+        Learn more about One Click Teach at{' '}
         <a href="https://github.com/oneclickteach/oneclickteach-home" target="_blank" rel="noreferrer">
           github.com
         </a>

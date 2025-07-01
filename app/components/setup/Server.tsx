@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { ServerConfigInterface } from '@/lib/interfaces'
 import { STORAGE_SERVER_CONFIG_KEY } from '@/lib/constants/storeage-key.constant'
+import { useTranslation } from 'react-i18next'
 
 export default function Server() {
+  const { t } = useTranslation()
   const [host, setHost] = useState('')
   const [port, setPort] = useState('22')
   const [user, setUser] = useState('')
@@ -64,7 +66,7 @@ export default function Server() {
 
   return (
     <div className="w-full h-full flex flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold mb-4">Server Configuration</h1>
+      <h1 className="text-2xl font-semibold mb-4">{t('serverConfiguration.title')}</h1>
       {isLoading && (
         <div className="flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -74,7 +76,7 @@ export default function Server() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="host" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Server Host
+              {t('serverConfiguration.serverHost')}
             </label>
             <input
               type="text"
@@ -88,7 +90,7 @@ export default function Server() {
           </div>
           <div>
             <label htmlFor="port" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Port
+              {t('serverConfiguration.serverPort')}
             </label>
             <input
               type="number"
@@ -102,7 +104,7 @@ export default function Server() {
           </div>
           <div>
             <label htmlFor="user" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Username
+              {t('serverConfiguration.serverUsername')}
             </label>
             <input
               type="text"
@@ -116,7 +118,7 @@ export default function Server() {
           </div>
           <div>
             <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Password
+              {t('serverConfiguration.serverPassword')}
             </label>
             <input
               type="password"
@@ -137,7 +139,7 @@ export default function Server() {
           disabled={isSaving}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSaving ? 'Saving...' : 'Save Configuration'}
+          {isSaving ? t('common.saving') : t('common.button.save')}
         </button>
       </form>
     </div>

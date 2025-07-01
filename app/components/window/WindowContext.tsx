@@ -8,7 +8,7 @@ export const WindowContextProvider = ({ children, titlebar }: WindowContextProvi
   const [initProps, setInitProps] = useState<WindowInitProps | undefined>()
 
   const defaultTitlebar: TitlebarProps = {
-    title: 'One Click Teach App',
+    title: 'One Click Teach',
     icon: 'appIcon.png',
     titleCentered: false,
     menuItems: [],

@@ -11,10 +11,10 @@ export interface LocalInterface {
   name: string
   flag: string
   code: string
+  direction: DirectionMode
 }
 
 export interface CommonConfigInterface {
   local: LocalInterface,
-  direction: DirectionMode
   darkMode: DarkMode
 }
