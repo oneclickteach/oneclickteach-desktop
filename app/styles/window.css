@@ -83,7 +83,7 @@
 
 .window-titlebar-icon {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   width: var(--window-title-margin);
   height: 100%;
@@ -103,6 +103,7 @@
   flex: 1;
   font-size: var(--window-titlebar-font-size);
   margin-left: var(--window-title-margin);
+  margin-right: var(--window-title-margin);
   font-weight: var(--window-titlebar-font-weight, normal);
   padding-left: 4px;
 }
@@ -116,7 +117,7 @@
 .window-titlebar-controls {
   display: flex;
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   top: 0;
   -webkit-app-region: no-drag;
 }
@@ -127,7 +128,7 @@
   gap: 2px;
   position: absolute;
   top: 9px;
-  left: var(--window-title-margin);
+  inset-inline-start: var(--window-title-margin);
   -webkit-app-region: no-drag;
   font-size: var(--window-titlebar-font-size);
 }

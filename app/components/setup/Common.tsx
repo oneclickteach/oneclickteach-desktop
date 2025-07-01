@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { CommonConfigInterface, LocalInterface } from '@/lib/interfaces'
 import { STORAGE_LOCALE_KEY } from '@/lib/constants/storeage-key.constant'
 import { Badge } from '../ui/badge'
-import { DarkMode } from '@/lib/enums'
+import { DarkMode, DirectionMode } from '@/lib/enums'
 
 export default function Common() {
   const [local, setLocal] = useState<LocalInterface>({
@@ -10,6 +10,7 @@ export default function Common() {
     flag: '',
     code: '',
   })
+  const [direction, setDirection] = useState<DirectionMode>(DirectionMode.LTR)
   const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
@@ -23,7 +24,16 @@ export default function Common() {
 
         if (config) {
           setLocal(config.local)
+          setDirection(config.direction)
           setDarkMode(config.darkMode)
+
+          // Set document language
+          document.documentElement.lang = config.local.name
+
+          // Set document direction
+          document.documentElement.dir = config.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
+
+          // Set dark mode class
           if (config.darkMode === DarkMode.DARK || (config.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)) {
             document.documentElement.classList.add('dark')
           } else if (
@@ -61,6 +71,26 @@ export default function Common() {
     }
   }
 
+  const handleDirectionMode = () => {
+    if (direction === DirectionMode.LTR) {
+      setDirection(DirectionMode.RTL)
+      document.documentElement.dir = 'rtl'
+    } else {
+      setDirection(DirectionMode.LTR)
+      document.documentElement.dir = 'ltr'
+    }
+  }
+
+  const handleLanguageChange = () => {
+    if (local.name === 'en') {
+      setLocal({ name: 'fa', flag: '🇮🇷', code: 'fa' })
+      document.documentElement.lang = 'fa'
+    } else {
+      setLocal({ name: 'en', flag: '🇺🇸', code: 'en' })
+      document.documentElement.lang = 'en'
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
@@ -69,6 +99,7 @@ export default function Common() {
     try {
       const config: CommonConfigInterface = {
         local,
+        direction,
         darkMode,
       }
 
@@ -116,6 +147,16 @@ export default function Common() {
         <div className="text-sm cursor-pointer">
           <Badge variant="secondary" onClick={handleDarkMode}>
             {darkMode === DarkMode.DARK ? 'Dark Mode' : darkMode === DarkMode.LIGHT ? 'Light Mode' : 'System Mode'}
+          </Badge>
+        </div>
+        <div className="text-sm cursor-pointer">
+          <Badge variant="secondary" onClick={handleDirectionMode}>
+            {direction === DirectionMode.LTR ? 'Left To Right' : 'Right To Left'}
+          </Badge>
+        </div>
+        <div className="text-sm cursor-pointer">
+          <Badge variant="secondary" onClick={handleLanguageChange}>
+            {local.name === 'en' ? 'English' : 'Persian'}
           </Badge>
         </div>
 

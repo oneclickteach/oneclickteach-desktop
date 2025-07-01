@@ -1,4 +1,4 @@
-import { DarkMode } from "../enums"
+import { DarkMode, DirectionMode } from "../enums"
 
 export interface ServerConfigInterface {
   host: string
@@ -15,5 +15,6 @@ export interface LocalInterface {
 
 export interface CommonConfigInterface {
   local: LocalInterface,
+  direction: DirectionMode
   darkMode: DarkMode
 }
