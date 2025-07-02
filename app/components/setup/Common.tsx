@@ -110,14 +110,8 @@ export default function Common() {
         darkMode,
       }
 
-      const success = await window.api.invoke('storage-set', STORAGE_LOCALE_KEY, config)
+      await window.api.invoke('storage-set', STORAGE_LOCALE_KEY, config)
 
-      if (success) {
-        console.log('Common configuration saved successfully')
-        // TODO: Navigate to next step
-      } else {
-        throw new Error('Failed to save configuration')
-      }
     } catch (err) {
       console.error('Error saving configuration:', err)
       setError('Failed to save configuration. Please try again.')

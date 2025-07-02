@@ -58,62 +58,34 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
 
   // Storage IPC handlers
   handleIPC('storage-set', async (_e, key: string, value: any) => {
-    try {
-      // Serialize the value to JSON
-      const data = JSON.stringify(value)
+    // Serialize the value to JSON
+    const data = JSON.stringify(value)
 
-      // Encrypt the data
-      const encryptedData = await safeStorage.encryptString(data)
+    // Encrypt the data
+    const encryptedData = await safeStorage.encryptString(data)
 
-      // Store the encrypted data in storage
-      await storage.setItem(key, encryptedData.toString('base64'))
-      return true
-    } catch (error) {
-      console.error('Error setting storage:', error)
-      return false
-    }
+    // Store the encrypted data in storage
+    await storage.setItem(key, encryptedData.toString('base64'))
   })
   handleIPC('storage-get', async (_e, key: string) => {
-    try {
-      // Get the encrypted data
-      const encryptedData = await storage.getItem(key)
-      if (!encryptedData) return null
+    // Get the encrypted data
+    const encryptedData = await storage.getItem(key)
+    if (!encryptedData) return null
 
-      // Decrypt the data
-      const decryptedData = safeStorage.decryptString(Buffer.from(encryptedData, 'base64'))
+    // Decrypt the data
+    const decryptedData = safeStorage.decryptString(Buffer.from(encryptedData, 'base64'))
 
-      // Try to parse as JSON if it's an object
-      return JSON.parse(decryptedData)
-    } catch (error) {
-      console.error('Error getting storage:', error)
-      return null
-    }
+    // Try to parse as JSON if it's an object
+    return JSON.parse(decryptedData)
   })
   handleIPC('storage-remove', async (_e, key: string) => {
-    try {
-      await storage.removeItem(key)
-      return true
-    } catch (error) {
-      console.error('Error removing storage:', error)
-      return false
-    }
+    return storage.removeItem(key)
   })
   handleIPC('storage-clear', async () => {
-    try {
-      await storage.clear()
-      return true
-    } catch (error) {
-      console.error('Error clearing storage:', error)
-      return false
-    }
+    return  storage.clear()
   })
   handleIPC('storage-list', async () => {
-    try {
-      const items = await storage.getAllItems()
-      return items
-    } catch (error) {
-      console.error('Error listing storage:', error)
-      return null
-    }
+    const items = await storage.getAllItems()
+    return items
   })
 }

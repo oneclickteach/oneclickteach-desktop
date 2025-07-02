@@ -48,14 +48,7 @@ export default function Server() {
         password,
       }
 
-      const success = await window.api.invoke('storage-set', STORAGE_SERVER_CONFIG_KEY, config)
-
-      if (success) {
-        console.log('Server configuration saved successfully')
-        // TODO: Navigate to next step
-      } else {
-        throw new Error('Failed to save configuration')
-      }
+      await window.api.invoke('storage-set', STORAGE_SERVER_CONFIG_KEY, config)
     } catch (err) {
       console.error('Error saving configuration:', err)
       setError('Failed to save configuration. Please try again.')

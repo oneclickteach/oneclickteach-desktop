@@ -1,6 +1,6 @@
 {
   "name": "oneclickteach-desktop",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Desktop management application for OneClickTeach platform - empowers language teachers to easily configure, deploy and manage their teaching websites through a simple GUI interface",
   "main": "./out/main/main.js",
   "license": "MIT",
