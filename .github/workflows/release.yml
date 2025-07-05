@@ -48,14 +48,14 @@ jobs:
           files: |
             dist/*.AppImage
             dist/*.deb
-            dist/*.rpm
-            dist/*.tar.gz
-            dist/*.yml
-            # dist/*.snap
-            # dist/*.exe
-            # dist/*.zip
-            # dist/*.dmg
-            # dist/*.blockmap
+        # dist/*.rpm
+        # dist/*.tar.gz
+        # dist/*.yml
+        # dist/*.snap
+        # dist/*.exe
+        # dist/*.zip
+        # dist/*.dmg
+        # dist/*.blockmap
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
