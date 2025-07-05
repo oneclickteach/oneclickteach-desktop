@@ -47,11 +47,11 @@ jobs:
           draft: true
           files: |
             dist/*.AppImage
-            dist/*.snap
             dist/*.deb
             dist/*.rpm
             dist/*.tar.gz
             dist/*.yml
+            # dist/*.snap
             # dist/*.exe
             # dist/*.zip
             # dist/*.dmg
