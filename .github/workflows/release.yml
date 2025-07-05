@@ -1,8 +1,11 @@
 name: Build/release Electron app
 on:
   push:
-    tags:
-      - v*.*.*
+    branches:
+      - main  # or whatever branch you're working on
+  # Comment out the tag trigger temporarily
+  # tags:
+  #   - v*.*.*
 jobs:
   release:
     runs-on: ${{ matrix.os }}
