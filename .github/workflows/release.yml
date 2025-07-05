@@ -8,6 +8,7 @@ on:
 jobs:
   release:
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         # os: [ubuntu-latest, macos-latest, windows-latest]
@@ -15,43 +16,19 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
+
       - name: Install Dependencies
         run: npm install
-
-      - name: Install system dependencies (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3-dev \
-            libatk-bridge2.0-dev \
-            libdrm2 \
-            libxkbcommon-dev \
-            libxss1 \
-            libasound2-dev \
-            libxtst6 \
-            libxrandr2 \
-            libgconf-2-4 \
-            libxdamage1 \
-            libxcomposite1 \
-            libxcursor1 \
-            libxi6 \
-            libatspi2.0-0 \
-            libgtk-3-0 \
-            snapcraft
 
       - name: build-linux
         if: matrix.os == 'ubuntu-latest'
         run: npm run build:linux
-        env:
-          # Skip snap store publishing
-          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
 
       - name: build-mac
         if: matrix.os == 'macos-latest'
@@ -64,7 +41,6 @@ jobs:
       - name: List built files (for debugging)
         run: ls -la dist/
 
-      # Only create release when triggered by a tag
       - name: release
         uses: softprops/action-gh-release@v1
         with:
@@ -80,5 +56,6 @@ jobs:
             # dist/*.zip
             # dist/*.dmg
             # dist/*.blockmap
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
