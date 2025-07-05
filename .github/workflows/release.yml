@@ -24,6 +24,28 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Install system dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3-dev \
+            libatk-bridge2.0-dev \
+            libdrm2 \
+            libxkbcommon-dev \
+            libxss1 \
+            libasound2-dev \
+            libxtst6 \
+            libxrandr2 \
+            libgconf-2-4 \
+            libxdamage1 \
+            libxcomposite1 \
+            libxcursor1 \
+            libxi6 \
+            libatspi2.0-0 \
+            libgtk-3-0 \
+            snapcraft
+
       - name: build-linux
         if: matrix.os == 'ubuntu-latest'
         run: npm run build:linux
