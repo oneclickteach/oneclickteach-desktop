@@ -5,8 +5,8 @@ Desktop management application for OneClickTeach platform - empowers language te
 ## Install and Developing
 
 ```bash
-npm install
-npm dev
+pnpm install
+pnpm dev
 
 ```
 
@@ -16,16 +16,16 @@ Build the application for your platform:
 
 ```bash
 # For Windows
-npm run build:win
+pnpm run build:win
 
 # For macOS
-npm run build:mac
+pnpm run build:mac
 
 # For Linux
-npm run build:linux
+pnpm run build:linux
 
 # Unpacked for all platforms
-npm run build:unpack
+pnpm run build:unpack
 ```
 
 ## IPC Communication
