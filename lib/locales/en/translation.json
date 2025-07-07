@@ -11,6 +11,9 @@
     "loading": "Loading...",
     "saving": "Saving..."
   },
+  "cloud": {
+    "mizbanCloudApiKey": "Mizban Cloud API Key"
+  },
   "serverConfiguration": {
     "title": "Server Configuration",
     "serverHost": "Server Host",

@@ -1,11 +1,33 @@
 import { BrowserWindow, ipcMain, shell, safeStorage, nativeTheme } from 'electron'
 import os from 'os'
 import { Storage } from '../storage'
+import { MizbanCloud } from '../services'
+import { STORAGE_SERVER_CONFIG_KEY } from '../constants/storeage-key.constant'
 
 const storage = new Storage()
 
 const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
   ipcMain.handle(channel, handler)
+}
+
+const getCloudClient = async () => {
+  let mizbanCloudApiKey = ''
+
+  try {
+    const encryptedData = await storage.getItem(STORAGE_SERVER_CONFIG_KEY)
+    if (encryptedData) {
+      const decryptedData = safeStorage.decryptString(Buffer.from(encryptedData, 'base64'))
+      const data = JSON.parse(decryptedData)
+
+      mizbanCloudApiKey = data.mizbanCloudApiKey || ''
+    }
+  } catch (error) {
+    //
+  }
+
+  return new MizbanCloud({
+    apiKey: mizbanCloudApiKey,
+  })
 }
 
 export const registerWindowIPC = (mainWindow: BrowserWindow) => {
@@ -82,10 +104,51 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     return storage.removeItem(key)
   })
   handleIPC('storage-clear', async () => {
-    return  storage.clear()
+    return storage.clear()
   })
   handleIPC('storage-list', async () => {
     const items = await storage.getAllItems()
     return items
+  })
+
+  // Mizban Cloud IPC handlers
+  handleIPC('invoke-mizban-cloud', async (_e, cmd: string, ...args) => {
+    let data
+    const cloudClient = await getCloudClient()
+
+    switch (cmd) {
+      case 'get-datacenter-list': {
+        const response = await cloudClient.staticService.listDataCenters()
+        data = response.data || []
+        break
+      }
+      case 'get-operating-system-list': {
+        const response = await cloudClient.staticService.listOperatingSystems()
+        data = response.data || []
+        break
+      }
+      case 'create-server': {
+        const response = await cloudClient.serverService.createServer(args[0])
+        data = response.data || {}
+        break
+      }
+      case 'get-server-list': {
+        const response = await cloudClient.serverService.listServers()
+        data = response.data || []
+        break
+      }
+      case 'get-server': {
+        const response = await cloudClient.serverService.getServer(args[0])
+        data = response.data || {}
+        break
+      }
+      case 'delete-server': {
+        const response = await cloudClient.serverService.deleteServer(args[0])
+        data = response.data || {}
+        break
+      }
+    }
+
+    return data
   })
 }

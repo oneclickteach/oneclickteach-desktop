@@ -11,6 +11,9 @@
     "loading": "در حال بارگذاری...",
     "saving": "در حال ذخیره..."
   },
+  "cloud": {
+    "mizbanCloudApiKey": "کلید API میزبان کلود"
+  },
   "serverConfiguration": {
     "title": "پیکربندی سرور",
     "serverHost": "میزبان سرور",

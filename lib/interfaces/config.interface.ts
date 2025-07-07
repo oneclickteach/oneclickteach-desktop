@@ -1,6 +1,7 @@
 import { DarkMode, DirectionMode } from "../enums"
 
 export interface ServerConfigInterface {
+  mizbanCloudApiKey: string
   host: string
   port: number
   user: string

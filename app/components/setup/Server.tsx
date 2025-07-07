@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function Server() {
   const { t } = useTranslation()
+  const [mizbanCloudApiKey, setMizbanCloudApiKey] = useState('')
   const [host, setHost] = useState('')
   const [port, setPort] = useState('22')
   const [user, setUser] = useState('')
@@ -14,12 +15,22 @@ export default function Server() {
   const [isLoading, setIsLoading] = useState(true)
   const [storedConfig, setStoredConfig] = useState<ServerConfigInterface | null>(null)
 
+  const test_api = [
+    'get-datacenter-list',
+    'get-operating-system-list',
+    'get-server-list',
+    'create-server',
+    'get-server',
+    'delete-server',
+  ]
+
   useEffect(() => {
     const loadConfig = async () => {
       try {
         const config = await window.api.invoke('storage-get', STORAGE_SERVER_CONFIG_KEY)
         if (config) {
           setStoredConfig(config)
+          setMizbanCloudApiKey(config.mizbanCloudApiKey)
           setHost(config.host)
           setPort(config.port.toString())
           setUser(config.user)
@@ -42,6 +53,7 @@ export default function Server() {
 
     try {
       const config: ServerConfigInterface = {
+        mizbanCloudApiKey,
         host,
         port: parseInt(port),
         user,
@@ -66,6 +78,22 @@ export default function Server() {
         </div>
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="mizbanCloudApiKey" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              {t('cloud.mizbanCloudApiKey')}
+            </label>
+            <input
+              type="password"
+              id="mizbanCloudApiKey"
+              value={mizbanCloudApiKey}
+              onChange={(e) => setMizbanCloudApiKey(e.target.value)}
+              placeholder="••••••••"
+              required
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="host" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -135,6 +163,38 @@ export default function Server() {
           {isSaving ? t('common.saving') : t('common.button.save')}
         </button>
       </form>
+
+      {test_api.map((apiName) => (
+        <button
+          key={apiName}
+          className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={async () => {
+            if (apiName === 'create-server') {
+              const data = await window.api.invoke('invoke-mizban-cloud', apiName, {
+                datacenter_id: 12,
+                name: 'server10',
+                ip_version: 'ipv4',
+                os_id: 98,
+                cpu: 1,
+                ram: 1,
+                storage: 25,
+                storage_type: 'SSD',
+                firewalls: [],
+                autopilot: true,
+              })
+              console.log('Data is:', data)
+            } else if (apiName === 'get-server' || apiName === 'delete-server') {
+              const data = await window.api.invoke('invoke-mizban-cloud', apiName, 236229)
+              console.log('Data is:', data)
+            } else {
+              const data = await window.api.invoke('invoke-mizban-cloud', apiName)
+              console.log('Data is:', data)
+            }
+          }}
+        >
+          {apiName.toLocaleUpperCase()}
+        </button>
+      ))}
     </div>
   )
 }
