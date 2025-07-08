@@ -12,7 +12,35 @@
     "saving": "Saving..."
   },
   "cloud": {
-    "mizbanCloudApiKey": "Mizban Cloud API Key"
+    "mizbanCloud": {
+      "title": "Mizban Cloud",
+      "description": "At first fill the API key that you've already obtain from MizbanCloud website into the API KEY and save it. \n Then create a server to start!",
+      "config": {
+        "title": "API Key Configuration",
+        "apiKey": "API Key"
+      },
+      "server": {
+        "title": "Server Configuration",
+        "noServer": "No server configured. Pleasa create a new server.",
+        "serverDetail": {
+          "title": "Server Details",
+          "id": "ID",
+          "name": "Name",
+          "displayName": "Display Name",
+          "status": "Status",
+          "ipAddress": "IP Address",
+          "actions": {
+            "deleteButton": "Delete Server"
+          }
+        },
+        "actions": {
+          "refreshButton": "Refresh",
+          "onRefreshingButton": "Refreshing...",
+          "createButton": "Create Server",
+          "onCreatingButton": "Creating..."
+        }
+      }
+    }
   },
   "serverConfiguration": {
     "title": "Server Configuration",

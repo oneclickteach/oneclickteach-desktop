@@ -13,7 +13,6 @@ export default function Server() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const [storedConfig, setStoredConfig] = useState<ServerConfigInterface | null>(null)
 
   const test_api = [
     'get-datacenter-list',
@@ -29,7 +28,6 @@ export default function Server() {
       try {
         const config = await window.api.invoke('storage-get', STORAGE_SERVER_CONFIG_KEY)
         if (config) {
-          setStoredConfig(config)
           setMizbanCloudApiKey(config.mizbanCloudApiKey)
           setHost(config.host)
           setPort(config.port.toString())
@@ -78,22 +76,6 @@ export default function Server() {
         </div>
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="mizbanCloudApiKey" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              {t('cloud.mizbanCloudApiKey')}
-            </label>
-            <input
-              type="password"
-              id="mizbanCloudApiKey"
-              value={mizbanCloudApiKey}
-              onChange={(e) => setMizbanCloudApiKey(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div>
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="host" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">

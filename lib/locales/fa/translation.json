@@ -12,7 +12,35 @@
     "saving": "در حال ذخیره..."
   },
   "cloud": {
-    "mizbanCloudApiKey": "کلید API میزبان کلود"
+    "mizbanCloud": {
+      "title": "میزبان کلود",
+      "description": "ابتدا کلیدی که از وب سایت میزبان کلود دریافت کرده اید را در قسمت کلید قرار داده و پس از ذخیره کردن آن میتوانید از قسمت سرور یک سرور ایجاد نمایید.",
+      "config": {
+        "title": "پیکربندی کلید",
+        "apiKey": "کلید API"
+      },
+      "server": {
+        "title": "تنظیمات سرور",
+        "noServer": "هیچ سروری ایجاد نشده است. لطفا یک سرور ایجاد کنید.",
+        "serverDetail": {
+          "title": "جزییات سرور",
+          "id": "آی دی",
+          "name": "اسم سرور",
+          "displayName": "نام نمایشی سرور",
+          "status": "وضعیت",
+          "ipAddress": "آدرس آی پی",
+          "actions": {
+            "deleteButton": "پاک کردن سرور"
+          }
+        },
+        "actions": {
+          "refreshButton": "بارگیری مجدد",
+          "onRefreshingButton": "در حال بارگیری ...",
+          "createButton": "ایجاد سرور",
+          "onCreatingButton": "در حال ایجاد سرور ..."
+        }
+      }
+    }
   },
   "serverConfiguration": {
     "title": "پیکربندی سرور",
