@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CommonConfigInterface } from '@/lib/interfaces'
-import { STORAGE_LOCALE_KEY } from '@/lib/constants/storeage-key.constant'
+import { STORAGE_LOCALE_KEY } from '@/lib/constants'
 import { Badge } from '../ui/badge'
 import { Sun, Moon, Globe, Flag } from 'lucide-react'
 import { DarkMode, DirectionMode } from '@/lib/enums'

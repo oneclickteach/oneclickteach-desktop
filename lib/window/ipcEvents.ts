@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain, shell, safeStorage, nativeTheme } from 'electro
 import os from 'os'
 import { Storage } from '../storage'
 import { MizbanCloud } from '../services'
-import { STORAGE_SERVER_CONFIG_KEY } from '../constants/storeage-key.constant'
+import { STORAGE_SERVER_CONFIG_KEY } from '../constants'
 
 const storage = new Storage()
 

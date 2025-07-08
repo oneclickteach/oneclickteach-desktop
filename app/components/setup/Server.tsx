@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ServerConfigInterface } from '@/lib/interfaces'
-import { STORAGE_SERVER_CONFIG_KEY } from '@/lib/constants/storeage-key.constant'
+import { STORAGE_SERVER_CONFIG_KEY } from '@/lib/constants'
 import { useTranslation } from 'react-i18next'
 
 export default function Server() {

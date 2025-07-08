@@ -1,4 +1,12 @@
-import { DarkMode, DirectionMode } from "../enums"
+import { DarkMode, DirectionMode } from '../enums'
+
+export interface WindowConfigInterface {
+  width: number
+  height: number
+  x?: number
+  y?: number
+  maximized: boolean
+}
 
 export interface ServerConfigInterface {
   mizbanCloudApiKey: string
@@ -16,6 +24,6 @@ export interface LocalInterface {
 }
 
 export interface CommonConfigInterface {
-  local: LocalInterface,
+  local: LocalInterface
   darkMode: DarkMode
 }
