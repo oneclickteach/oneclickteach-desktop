@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CommonConfigInterface } from '@/lib/interfaces'
-import { STORAGE_LOCALE_KEY } from '@/lib/constants'
+import { LOCAL_CONFIG_DEFAULT, STORAGE_LOCALE_KEY } from '@/lib/constants'
 import { Badge } from '../ui/badge'
 import { Sun, Moon, Globe, Flag } from 'lucide-react'
 import { DarkMode, DirectionMode } from '@/lib/enums'
@@ -10,12 +10,7 @@ import i18n from '@/lib/i18n'
 
 export default function Common() {
   const { t } = useTranslation()
-  const [local, setLocal] = useState<LocalInterface>({
-    name: 'en',
-    flag: 'en',
-    code: 'en',
-    direction: DirectionMode.LTR,
-  })
+  const [local, setLocal] = useState<LocalInterface>(LOCAL_CONFIG_DEFAULT as LocalInterface)
 
   const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
   const [isSaving, setIsSaving] = useState(false)

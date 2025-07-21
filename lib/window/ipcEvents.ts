@@ -3,6 +3,9 @@ import os from 'os'
 import { Storage } from '../storage'
 import { MizbanCloud } from '../services'
 import { STORAGE_SERVER_CONFIG_KEY } from '../constants'
+import { CommandResult, runCommand } from './commandRunner'
+import VagrantSetup from '../services/vagrant'
+import InfrastructureSetup from '../services/infrastructure'
 
 const storage = new Storage()
 
@@ -80,25 +83,10 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
 
   // Storage IPC handlers
   handleIPC('storage-set', async (_e, key: string, value: any) => {
-    // Serialize the value to JSON
-    const data = JSON.stringify(value)
-
-    // Encrypt the data
-    const encryptedData = await safeStorage.encryptString(data)
-
-    // Store the encrypted data in storage
-    await storage.setItem(key, encryptedData.toString('base64'))
+    return storage.setItem(key, value)
   })
   handleIPC('storage-get', async (_e, key: string) => {
-    // Get the encrypted data
-    const encryptedData = await storage.getItem(key)
-    if (!encryptedData) return null
-
-    // Decrypt the data
-    const decryptedData = safeStorage.decryptString(Buffer.from(encryptedData, 'base64'))
-
-    // Try to parse as JSON if it's an object
-    return JSON.parse(decryptedData)
+    return storage.getItem(key)
   })
   handleIPC('storage-remove', async (_e, key: string) => {
     return storage.removeItem(key)
@@ -150,5 +138,30 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     }
 
     return data
+  })
+
+  // Shell Commands IPC handlers
+  handleIPC('run-shell-command', async (_e, cmd: string) => {
+    const { stdout }: CommandResult = await runCommand(cmd)
+    console.log('stdout', stdout)
+    return stdout
+  })
+
+  //
+  handleIPC('config-vagrant', async (_e) => {
+    const vagrantSetup = new VagrantSetup()
+    await vagrantSetup.setup()
+    console.log('vagrant setup completed =====================================')
+
+    return
+  })
+
+  //
+  handleIPC('config-infrastructure', async (_e) => {
+    const infrastructureSetup = new InfrastructureSetup()
+    await infrastructureSetup.setup()
+    console.log('infrastructure setup completed ==============================')
+
+    return
   })
 }

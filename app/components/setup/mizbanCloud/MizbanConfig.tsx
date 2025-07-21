@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function MizbanConfig() {
   const { t } = useTranslation()
+  const [serverConfig, setServerConfig] = useState<ServerConfigInterface | null>(null)
   const [mizbanCloudApiKey, setMizbanCloudApiKey] = useState('')
   const [host, setHost] = useState('')
   const [port, setPort] = useState('22')
@@ -18,6 +19,7 @@ export default function MizbanConfig() {
       try {
         const config = await window.api.invoke('storage-get', STORAGE_SERVER_CONFIG_KEY)
         if (config) {
+          setServerConfig(config)
           setMizbanCloudApiKey(config.mizbanCloudApiKey)
           setHost(config.host)
           setPort(config.port.toString())
@@ -39,13 +41,11 @@ export default function MizbanConfig() {
     setIsSaving(true)
 
     try {
-      const config: ServerConfigInterface = {
-        mizbanCloudApiKey,
-        host,
-        port: parseInt(port),
-        user,
-        password,
+      const config = {
+        ...serverConfig,
       }
+
+      config.mizbanCloudApiKey = mizbanCloudApiKey
 
       await window.api.invoke('storage-set', STORAGE_SERVER_CONFIG_KEY, config)
     } catch (err) {

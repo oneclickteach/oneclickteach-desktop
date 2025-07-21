@@ -1,0 +1,73 @@
+---
+all:
+  hosts:
+    server:
+      ansible_host: "<%= server.host %>"
+      ansible_port: <%= server.port %>
+      ansible_user: "<%= server.user %>"
+      ansible_ssh_private_key_file: "<%= server.sshPrivateKeyFile %>"
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
+    docker:
+      network_name: "oneclickteach"
+
+    redis:
+      image: "redis:7.2"
+      container_name: "redis"
+      container_port: 6379
+      external_port: <%= redis.externalPort %>
+      password: "<%= redis.password %>"
+      data_path: "/opt/redis/data"
+    
+    postgresql:
+      image: "postgres:16"
+      container_name: "postgres"
+      container_port: 5432
+      external_port: <%= postgresql.externalPort %>
+      user: "<%= postgresql.user %>"
+      password: "<%= postgresql.password %>"
+      db: "<%= postgresql.db %>"
+      data_path: "/opt/postgres/data"
+
+    oneclickteach_api:
+      image: "mahdad1988/oneclickteach-api:<%= api.imageVersion %>"
+      container_name: "oneclickteach_api"
+      container_port: 3000
+      external_port: <%= api.externalPort %>
+      environments:
+        REDIS_CACHE_TTL_GLOBAL: 86400000
+        REDIS_HOST: "{{ redis.container_name }}"
+        REDIS_PORT: "{{ redis.container_port }}"
+        REDIS_PASSWORD: "{{ redis.password }}"
+        REDIS_CACHE_KEY_PREFIX: "app"
+        DATABASE_HOST: "{{ postgresql.container_name }}"
+        DATABASE_PORT: "{{ postgresql.container_port }}"
+        DATABASE_USER: "{{ postgresql.user }}"
+        DATABASE_PASSWORD: "{{ postgresql.password }}"
+        DATABASE_NAME: "{{ postgresql.db }}"
+        DATABASE_SYNCHRONIZE: "true"
+        DATABASE_AUTO_LOAD_ENTITIES: "true"
+        JWT_SECRET: "<%= api.secret %>"
+        JWT_EXPIRATION: "2592000"
+        CORS_ORIGINS: "<%= api.host %>,<%= web.host %>"
+        SWAGGER_SERVER_HOST: "<%= api.host %>"
+        LOG_LEVEL: "<%= api.logLevel %>"
+
+    oneclickteach_web:
+      image: "mahdad1988/oneclickteach-web:<%= web.imageVersion %>"
+      container_name: "oneclickteach_web"
+      container_port: 3000
+      external_port: <%= web.externalPort %>
+      environments:
+        API_BASE_URL: "<%= api.host %>"
+        BASE_URL: "<%= web.host %>"
+        ENVIRONMENT: 'development'
+      runtime_config_path: "/opt/config/runtime-config.json"
+
+    proxy:
+      is_enabled: false
+      http_proxy: "http://192.168.100.5:22801"
+      https_proxy: "http://192.168.100.5:22801"

@@ -12,6 +12,9 @@
     "saving": "Saving..."
   },
   "cloud": {
+    "vagrant": {
+      "title": "Vagrant"
+    },
     "mizbanCloud": {
       "title": "Mizban Cloud",
       "description": "At first fill the API key that you've already obtain from MizbanCloud website into the API KEY and save it. \n Then create a server to start!",

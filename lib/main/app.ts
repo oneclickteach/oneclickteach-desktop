@@ -1,19 +1,16 @@
 import { BrowserWindow, shell, app, protocol, net } from 'electron'
 import { join } from 'path'
-import { STORAGE_WINDOW_SETTINGS_KEY } from '../constants/storage-key.constant'
+import {
+  STORAGE_LOCALE_KEY,
+  STORAGE_SERVER_CONFIG_KEY,
+  STORAGE_WINDOW_SETTINGS_KEY,
+} from '../constants/storage-key.constant'
 import { registerWindowIPC } from '@/lib/window/ipcEvents'
 import appIcon from '@/resources/build/icon.png?asset'
 import { pathToFileURL } from 'url'
 import { Storage } from '@/lib/storage'
 import { WindowConfigInterface } from '../interfaces'
-
-const defaultWindowConfig: WindowConfigInterface = {
-  width: 1400,
-  height: 900,
-  x: undefined,
-  y: undefined,
-  maximized: false,
-}
+import { COMMON_CONFIG_DEFAULT, SERVER_CONFIG_DEFAULT, WINDOWS_CONFIG_DEFAULT } from '../constants'
 
 export function createAppWindow(): void {
   // Register custom protocol for resources
@@ -22,14 +19,31 @@ export function createAppWindow(): void {
   // Storage instance
   const storage = new Storage()
 
-  // Load window settings from storage
-  const loadWindowSettings = async (): Promise<WindowConfigInterface> => {
+  // Checking setting and load windows setting
+  const checkingSettings = async (): Promise<WindowConfigInterface> => {
     try {
-      const settings = await storage.getItem(STORAGE_WINDOW_SETTINGS_KEY)
-      return settings ? JSON.parse(settings) : defaultWindowConfig
+      const [windowsSetting, localSetting, serverConfigSetting] = await Promise.all([
+        storage.getItem(STORAGE_WINDOW_SETTINGS_KEY),
+        storage.getItem(STORAGE_LOCALE_KEY),
+        storage.getItem(STORAGE_SERVER_CONFIG_KEY),
+      ])
+
+      if (!windowsSetting) {
+        await storage.setItem(STORAGE_WINDOW_SETTINGS_KEY, WINDOWS_CONFIG_DEFAULT)
+      }
+
+      if (!localSetting) {
+        await storage.setItem(STORAGE_LOCALE_KEY, COMMON_CONFIG_DEFAULT)
+      }
+
+      if (!serverConfigSetting) {
+        await storage.setItem(STORAGE_SERVER_CONFIG_KEY, SERVER_CONFIG_DEFAULT)
+      }
+
+      return windowsSetting
     } catch (error) {
-      console.error('Error loading window settings:', error)
-      return defaultWindowConfig
+      console.error('Error checking settings:', error)
+      return WINDOWS_CONFIG_DEFAULT
     }
   }
 
@@ -43,7 +57,7 @@ export function createAppWindow(): void {
         y: bounds.y,
         maximized: mainWindow.isMaximized(),
       }
-      await storage.setItem(STORAGE_WINDOW_SETTINGS_KEY, JSON.stringify(settings))
+      await storage.setItem(STORAGE_WINDOW_SETTINGS_KEY, settings)
     } catch (error) {
       console.error('Error saving window settings:', error)
     }
@@ -66,7 +80,7 @@ export function createAppWindow(): void {
   })
 
   // Load window settings and apply them
-  loadWindowSettings().then((settings) => {
+  checkingSettings().then((settings) => {
     if (settings.maximized) {
       mainWindow.maximize()
     } else {

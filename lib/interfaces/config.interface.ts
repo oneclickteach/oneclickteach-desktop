@@ -1,4 +1,4 @@
-import { DarkMode, DirectionMode } from '../enums'
+import { DarkMode, DirectionMode, ServerProvider } from '../enums'
 
 export interface WindowConfigInterface {
   width: number
@@ -8,12 +8,57 @@ export interface WindowConfigInterface {
   maximized: boolean
 }
 
+export interface VagrantConfigInterface {
+  node: {
+    box: string
+    cpu: number
+    memory: number
+    ip: string
+  }
+  ports: {
+    api: number
+    web: number
+    database: number
+  }
+}
+
+export interface InventoryConfigInterface {
+  server: {
+    host: string
+    port: number
+    user: string
+    sshPrivateKeyFile: string
+    password: string
+  }
+  redis: {
+    externalPort: number
+    password: string
+  }
+  postgresql: {
+    externalPort: number
+    user: string
+    password: string
+    db: string
+  }
+  api: {
+    imageVersion: string
+    host: string
+    externalPort: number
+    secret: string
+    logLevel: string
+  }
+  web: {
+    imageVersion: string
+    host: string
+    externalPort: number
+  }
+}
+
 export interface ServerConfigInterface {
+  serverProviderType: ServerProvider
   mizbanCloudApiKey: string
-  host: string
-  port: number
-  user: string
-  password: string
+  vagrant: VagrantConfigInterface
+  inventory: InventoryConfigInterface
 }
 
 export interface LocalInterface {
