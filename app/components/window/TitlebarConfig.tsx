@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CommonConfigInterface } from '@/lib/interfaces'
 import { LOCAL_CONFIG_DEFAULT, STORAGE_LOCALE_KEY } from '@/lib/constants'
-import { Badge } from '../ui/badge'
+import { Badge } from '@/app/components/ui/badge'
 import { Sun, Moon, Globe } from 'lucide-react'
 import { DarkMode, DirectionMode } from '@/lib/enums'
 import { useTranslation } from 'react-i18next'

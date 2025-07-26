@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
-import { Button } from '../ui/button'
+import { Button } from '@/app/components/ui/button'
 
 import StepDomain from './steps/StepDomain'
 import StepDNS from './steps/StepDNS'

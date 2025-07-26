@@ -1,7 +1,6 @@
 import VagrantServer from './VagrantServer'
 
 export default function Vagrant() {
-
   const handleVagrant = async (e: React.FormEvent) => {
     e.preventDefault()
 
