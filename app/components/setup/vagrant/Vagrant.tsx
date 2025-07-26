@@ -1,5 +1,3 @@
-import VagrantServer from './VagrantServer'
-
 export default function Vagrant() {
   const handleVagrant = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,8 +35,6 @@ export default function Vagrant() {
         >
           Setup Infrastructure
         </button>
-
-        <VagrantServer />
       </div>
     </div>
   )

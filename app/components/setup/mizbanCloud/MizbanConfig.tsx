@@ -1,31 +1,21 @@
 import { useState, useEffect } from 'react'
-import { ServerConfigInterface } from '@/lib/interfaces'
-import { STORAGE_SERVER_CONFIG_KEY } from '@/lib/constants'
 import { useTranslation } from 'react-i18next'
+import { useServerConfigStore } from '@/lib/store'
 
 export default function MizbanConfig() {
   const { t } = useTranslation()
-  const [serverConfig, setServerConfig] = useState<ServerConfigInterface | null>(null)
+  const { serverConfig, getServerConfig, updateMizbanCloudApiKey } = useServerConfigStore((state) => state)
+
   const [mizbanCloudApiKey, setMizbanCloudApiKey] = useState('')
-  const [host, setHost] = useState('')
-  const [port, setPort] = useState('22')
-  const [user, setUser] = useState('')
-  const [password, setPassword] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const config = await window.api.invoke('storage-get', STORAGE_SERVER_CONFIG_KEY)
-        if (config) {
-          setServerConfig(config)
-          setMizbanCloudApiKey(config.mizbanCloudApiKey)
-          setHost(config.host)
-          setPort(config.port.toString())
-          setUser(config.user)
-          setPassword(config.password)
-        }
+        await getServerConfig()
+        setMizbanCloudApiKey(serverConfig?.mizbanCloudApiKey || '')
+
       } catch (err) {
         console.error('Error loading config:', err)
       } finally {
@@ -34,20 +24,14 @@ export default function MizbanConfig() {
     }
 
     loadConfig()
-  }, [])
+  }, [serverConfig, getServerConfig, updateMizbanCloudApiKey])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
 
     try {
-      const config = {
-        ...serverConfig,
-      }
-
-      config.mizbanCloudApiKey = mizbanCloudApiKey
-
-      await window.api.invoke('storage-set', STORAGE_SERVER_CONFIG_KEY, config)
+      updateMizbanCloudApiKey(mizbanCloudApiKey)
     } catch (err) {
       console.error('Error saving configuration:', err)
     } finally {

@@ -17,13 +17,8 @@ const getCloudClient = async () => {
   let mizbanCloudApiKey = ''
 
   try {
-    const encryptedData = await storage.getItem(STORAGE_SERVER_CONFIG_KEY)
-    if (encryptedData) {
-      const decryptedData = safeStorage.decryptString(Buffer.from(encryptedData, 'base64'))
-      const data = JSON.parse(decryptedData)
-
-      mizbanCloudApiKey = data.mizbanCloudApiKey || ''
-    }
+    const serverConfigSetting = await storage.getItem(STORAGE_SERVER_CONFIG_KEY)
+    mizbanCloudApiKey = serverConfigSetting?.mizbanCloudApiKey || ''
   } catch (error) {
     //
   }

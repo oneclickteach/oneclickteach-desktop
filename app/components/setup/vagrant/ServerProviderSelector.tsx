@@ -14,59 +14,33 @@ import {
   CommandList,
 } from '@/app/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/app/components/ui/popover'
-import { ServerConfigInterface } from '@/lib/interfaces'
-import { STORAGE_SERVER_CONFIG_KEY } from '@/lib/constants'
-import { ServerProvider } from '@/lib/enums'
+import { ServerProviderType } from '@/lib/enums'
+import { useServerConfigStore } from '@/lib/store/useServerConfigStore'
 
-const serverProviderOptions = Object.values(ServerProvider).map((value) => ({
+const serverProviderOptions = Object.values(ServerProviderType).map((value) => ({
   label: value.charAt(0).toUpperCase() + value.slice(1),
   value,
 }))
 
 export function ServerProviderSelector() {
-  const [serverConfig, setServerConfig] = useState<ServerConfigInterface | null>(null)
-  const [serverProviderType, setServerProviderType] = useState(ServerProvider.VAGRANT)
+  const { serverConfig, getServerConfig, updateServerProviderType } = useServerConfigStore((state) => state)
   const [open, setOpen] = useState(false)
 
   const handleServerProviderSelect = async (currentValue: string) => {
-    setServerProviderType(currentValue as ServerProvider)
+    updateServerProviderType(currentValue as ServerProviderType)
     setOpen(false)
-
-    try {
-      const config = {
-        ...serverConfig,
-      }
-
-      config.serverProviderType = currentValue as ServerProvider
-
-      await window.api.invoke('storage-set', STORAGE_SERVER_CONFIG_KEY, config)
-    } catch (err) {
-      console.error('Error saving configuration:', err)
-    }
   }
 
   useEffect(() => {
-    const loadConfig = async () => {
-      try {
-        const config = await window.api.invoke('storage-get', STORAGE_SERVER_CONFIG_KEY)
-        if (config) {
-          setServerConfig(config)
-          setServerProviderType(config.serverProviderType)
-        }
-      } catch (err) {
-        console.error('Error loading configuration:', err)
-      }
-    }
-
-    loadConfig()
-  }, [])
+    getServerConfig()
+  }, [getServerConfig, updateServerProviderType])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-          {serverProviderType
-            ? serverProviderOptions.find((provider) => provider.value === serverProviderType)?.label
+          {serverConfig.serverProviderType
+            ? serverProviderOptions.find((provider) => provider.value === serverConfig.serverProviderType)?.label
             : 'Select Server Provider...'}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -80,7 +54,12 @@ export function ServerProviderSelector() {
               {serverProviderOptions.map((provider) => (
                 <CommandItem key={provider.value} value={provider.value} onSelect={handleServerProviderSelect}>
                   {provider.label}
-                  <Check className={cn('ml-auto', serverProviderType === provider.value ? 'opacity-100' : 'opacity-0')} />
+                  <Check
+                    className={cn(
+                      'ml-auto',
+                      serverConfig.serverProviderType === provider.value ? 'opacity-100' : 'opacity-0'
+                    )}
+                  />
                 </CommandItem>
               ))}
             </CommandGroup>

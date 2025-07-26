@@ -1,3 +1,5 @@
+import { DarkMode, DirectionMode, ServerProviderType } from '../enums'
+
 export const WINDOWS_CONFIG_DEFAULT = {
   width: 1400,
   height: 900,
@@ -10,16 +12,16 @@ export const LOCAL_CONFIG_DEFAULT = {
   name: 'en',
   flag: '🇺🇸',
   code: 'en',
-  direction: 'ltr',
+  direction: DirectionMode.LTR,
 }
 
 export const COMMON_CONFIG_DEFAULT = {
   local: LOCAL_CONFIG_DEFAULT,
-  darkMode: 'dark',
+  darkMode: DarkMode.DARK,
 }
 
 export const SERVER_CONFIG_DEFAULT = {
-  serverProviderType: 'vagrant',
+  serverProviderType: ServerProviderType.VAGRANT,
   mizbanCloudApiKey: '',
   vagrant: {
     node: {
@@ -40,6 +42,7 @@ export const SERVER_CONFIG_DEFAULT = {
       port: 22,
       user: 'vagrant',
       sshPrivateKeyFile: '',
+      password: '',
     },
     redis: {
       externalPort: 56379,

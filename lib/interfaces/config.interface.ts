@@ -1,4 +1,4 @@
-import { DarkMode, DirectionMode, ServerProvider } from '../enums'
+import { DarkMode, DirectionMode, ServerProviderType } from '../enums'
 
 export interface WindowConfigInterface {
   width: number
@@ -55,7 +55,7 @@ export interface InventoryConfigInterface {
 }
 
 export interface ServerConfigInterface {
-  serverProviderType: ServerProvider
+  serverProviderType: ServerProviderType
   mizbanCloudApiKey: string
   vagrant: VagrantConfigInterface
   inventory: InventoryConfigInterface

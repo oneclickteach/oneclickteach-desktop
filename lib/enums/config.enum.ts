@@ -9,7 +9,7 @@ export enum DirectionMode {
   RTL = 'rtl',
 }
 
-export enum ServerProvider {
+export enum ServerProviderType {
   VAGRANT = 'vagrant',
   MIZBANCLOUD = 'mizbancloud',
 }

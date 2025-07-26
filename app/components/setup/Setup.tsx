@@ -1,17 +1,14 @@
-// import MizbanCloud from './mizbanCloud/MizbanCloud'
-import MizbanCloud from './mizbanCloud/MizbanCloud'
+import MizbanCloudComponent from './mizbanCloud/MizbanCloudComponent'
 import { ServerProviderSelector } from './vagrant/ServerProviderSelector'
 import Vagrant from './vagrant/Vagrant'
-// import Server from './Server'
 
 export default function Setup() {
   return (
     <div className="flex flex-col gap-2">
       <ServerProviderSelector />
       <Vagrant />
-      <MizbanCloud />
+      <MizbanCloudComponent />
       {/* <hr className="mt-16 mb-4" /> */}
-      {/* <Server /> */}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import MizbanConfig from './MizbanConfig'
 import MizbanServer from './MizbanServer'
 
-export default function MizbanCloud() {
+export default function MizbanCloudComponent() {
   const { t } = useTranslation()
 
   return (

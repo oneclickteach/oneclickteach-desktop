@@ -7,9 +7,12 @@ import { DarkMode, DirectionMode } from '@/lib/enums'
 import { useTranslation } from 'react-i18next'
 import { LocalInterface } from '@/lib/interfaces'
 import i18n from '@/lib/i18n'
+import { useCommonConfigStore } from '@/lib/store'
 
 export default function TitlebarConfig() {
   const { t } = useTranslation()
+  const { commonConfig, getCommonConfig, updateCommonConfig } = useCommonConfigStore((state) => state)
+
   const [local, setLocal] = useState<LocalInterface>(LOCAL_CONFIG_DEFAULT as LocalInterface)
 
   const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
@@ -20,8 +23,48 @@ export default function TitlebarConfig() {
   }, [local.name])
 
   useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        if (!commonConfig) {
+          await getCommonConfig()
+        } else {
+          const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
+
+          setLocal(commonConfig.local)
+          setDarkMode(commonConfig.darkMode)
+
+          // Set document language
+          document.documentElement.lang = commonConfig.local.name
+
+          // Set document direction
+          document.documentElement.dir = commonConfig.local.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
+
+          // Update i18n language
+          i18n.changeLanguage(commonConfig.local.name)
+
+          // Update translations
+          document.title = t('common.title')
+
+          // Set dark mode class
+          if (
+            commonConfig.darkMode === DarkMode.DARK ||
+            (commonConfig.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)
+          ) {
+            document.documentElement.classList.add('dark')
+          } else if (
+            commonConfig.darkMode === DarkMode.LIGHT ||
+            (commonConfig.darkMode === DarkMode.SYSTEM && !systemThemeIsDarkMode)
+          ) {
+            document.documentElement.classList.remove('dark')
+          }
+        }
+      } catch (err) {
+        console.error('Error loading config:', err)
+      }
+    }
+
     loadConfig()
-  }, [])
+  }, [commonConfig, getCommonConfig, t])
 
   const handleDarkMode = async () => {
     let newDarkMode = darkMode
@@ -61,42 +104,6 @@ export default function TitlebarConfig() {
     saveConfig(newLocal, darkMode)
   }
 
-  const loadConfig = async () => {
-    try {
-      const config = await window.api.invoke('storage-get', STORAGE_LOCALE_KEY)
-      const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
-
-      if (config) {
-        setLocal(config.local)
-        setDarkMode(config.darkMode)
-
-        // Set document language
-        document.documentElement.lang = config.local.name
-
-        // Set document direction
-        document.documentElement.dir = config.local.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
-
-        // Update i18n language
-        i18n.changeLanguage(config.local.name)
-
-        // Update translations
-        document.title = t('common.title')
-
-        // Set dark mode class
-        if (config.darkMode === DarkMode.DARK || (config.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)) {
-          document.documentElement.classList.add('dark')
-        } else if (
-          config.darkMode === DarkMode.LIGHT ||
-          (config.darkMode === DarkMode.SYSTEM && !systemThemeIsDarkMode)
-        ) {
-          document.documentElement.classList.remove('dark')
-        }
-      }
-    } catch (err) {
-      console.error('Error loading config:', err)
-    }
-  }
-
   const saveConfig = async (local: LocalInterface, darkMode: DarkMode) => {
     try {
       const config: CommonConfigInterface = {
@@ -104,7 +111,7 @@ export default function TitlebarConfig() {
         darkMode,
       }
 
-      await window.api.invoke('storage-set', STORAGE_LOCALE_KEY, config)
+      await updateCommonConfig(config)
     } catch (err) {
       console.error('Error saving configuration:', err)
     }

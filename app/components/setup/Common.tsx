@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react'
 import { CommonConfigInterface } from '@/lib/interfaces'
-import { LOCAL_CONFIG_DEFAULT, STORAGE_LOCALE_KEY } from '@/lib/constants'
+import { LOCAL_CONFIG_DEFAULT } from '@/lib/constants'
 import { Badge } from '@/app/components/ui/badge'
 import { Sun, Moon, Globe, Flag } from 'lucide-react'
 import { DarkMode, DirectionMode } from '@/lib/enums'
 import { useTranslation } from 'react-i18next'
 import { LocalInterface } from '@/lib/interfaces'
 import i18n from '@/lib/i18n'
+import { useCommonConfigStore } from '@/lib/store'
 
 export default function Common() {
   const { t } = useTranslation()
-  const [local, setLocal] = useState<LocalInterface>(LOCAL_CONFIG_DEFAULT as LocalInterface)
+  const { commonConfig, getCommonConfig, updateCommonConfig } = useCommonConfigStore((state) => state)
 
-  const [darkMode, setDarkMode] = useState<DarkMode>(DarkMode.SYSTEM)
+  const [local, setLocal] = useState<LocalInterface>(commonConfig?.local || (LOCAL_CONFIG_DEFAULT as LocalInterface))
+  const [darkMode, setDarkMode] = useState<DarkMode>(commonConfig?.darkMode || DarkMode.SYSTEM)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!commonConfig)
 
   useEffect(() => {
     // Initialize i18n with current language
@@ -25,61 +27,66 @@ export default function Common() {
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const config = await window.api.invoke('storage-get', STORAGE_LOCALE_KEY)
-        const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
+        if (!commonConfig) {
+          await getCommonConfig()
+        } else {
+          const { local: configLocal, darkMode: configDarkMode } = commonConfig
 
-        if (config) {
-          setLocal(config.local)
-          setDarkMode(config.darkMode)
+          setLocal(configLocal)
+          setDarkMode(configDarkMode)
 
           // Set document language
-          document.documentElement.lang = config.local.name
+          document.documentElement.lang = configLocal.name
 
           // Set document direction
-          document.documentElement.dir = config.local.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
+          document.documentElement.dir = configLocal.direction === DirectionMode.LTR ? 'ltr' : 'rtl'
 
           // Update i18n language
-          i18n.changeLanguage(config.local.name)
+          i18n.changeLanguage(configLocal.name)
 
           // Update translations
           document.title = t('common.title')
 
           // Set dark mode class
-          if (config.darkMode === DarkMode.DARK || (config.darkMode === DarkMode.SYSTEM && systemThemeIsDarkMode)) {
-            document.documentElement.classList.add('dark')
-          } else if (
-            config.darkMode === DarkMode.LIGHT ||
-            (config.darkMode === DarkMode.SYSTEM && !systemThemeIsDarkMode)
+          if (
+            configDarkMode === DarkMode.DARK ||
+            (configDarkMode === DarkMode.SYSTEM && window.matchMedia('(prefers-color-scheme: dark)').matches)
           ) {
+            document.documentElement.classList.add('dark')
+          } else {
             document.documentElement.classList.remove('dark')
           }
         }
       } catch (err) {
         console.error('Error loading config:', err)
+        setError('Failed to load configuration')
       } finally {
         setIsLoading(false)
       }
     }
 
     loadConfig()
-  }, [])
+  }, [commonConfig, getCommonConfig, t])
 
-  const handleDarkMode = async () => {
+  const handleDarkMode = () => {
+    let newDarkMode: DarkMode
+
     if (darkMode === DarkMode.DARK) {
-      setDarkMode(DarkMode.LIGHT)
+      newDarkMode = DarkMode.LIGHT
       document.documentElement.classList.remove('dark')
     } else if (darkMode === DarkMode.LIGHT) {
-      setDarkMode(DarkMode.SYSTEM)
-      const systemThemeIsDarkMode = await window.api.invoke('get-system-theme')
-      if (systemThemeIsDarkMode) {
+      newDarkMode = DarkMode.SYSTEM
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add('dark')
       } else {
         document.documentElement.classList.remove('dark')
       }
     } else {
-      setDarkMode(DarkMode.DARK)
+      newDarkMode = DarkMode.DARK
       document.documentElement.classList.add('dark')
     }
+
+    setDarkMode(newDarkMode)
   }
 
   const handleLanguageChange = () => {
@@ -105,8 +112,7 @@ export default function Common() {
         darkMode,
       }
 
-      await window.api.invoke('storage-set', STORAGE_LOCALE_KEY, config)
-
+      await updateCommonConfig(config)
     } catch (err) {
       console.error('Error saving configuration:', err)
       setError('Failed to save configuration. Please try again.')
