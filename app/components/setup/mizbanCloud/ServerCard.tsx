@@ -52,11 +52,7 @@ export default function ServerCard({ server, onServerDeleted }: ServerCardProps)
           <span className="font-medium">{t('cloud.mizbanCloud.server.serverDetail.status')} :</span>
           <span
             className={`font-medium ${
-              server.status === 'ON'
-                ? 'text-green-500'
-                : server.status === 'BUILD'
-                  ? 'text-yellow-500'
-                  : 'text-red-500'
+              server.status === 'ON' ? 'text-green-500' : server.status === 'BUILD' ? 'text-yellow-500' : 'text-red-500'
             }`}
           >
             {server.status}

@@ -11,7 +11,9 @@ export default function MizbanServer() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const loadServers = async () => {
+  const loadServer = async (): Promise<ServerMC | null> => {
+    let server: ServerMC | null = null
+
     try {
       setLoading(true)
       setError(null)
@@ -20,7 +22,7 @@ export default function MizbanServer() {
       const servers = await window.api.invoke('invoke-mizban-cloud', 'get-server-list')
 
       if (servers) {
-        const server = servers.find((server: ServerMC) => server.name === SERVER_NAME)
+        server = servers.find((server: ServerMC) => server.name === SERVER_NAME)
         setServer(server)
       }
     } catch (err) {
@@ -29,9 +31,11 @@ export default function MizbanServer() {
     } finally {
       setLoading(false)
     }
+
+    return server
   }
 
-  const handleCreateServer = async () => {
+  const createServer = async () => {
     try {
       setLoading(true)
       setError(null)
@@ -61,7 +65,7 @@ export default function MizbanServer() {
     }
   }
 
-  const handleDeleteServer = async () => {
+  const deleteServer = async () => {
     try {
       setLoading(true)
       setError(null)
@@ -83,8 +87,25 @@ export default function MizbanServer() {
     }
   }
 
+  const handleCreateServer = async () => {
+    await createServer()
+
+    const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
+
+    for (let i = 0; i < 3; i++) {
+      const server = await loadServer()
+      console.log('server status checking (loop) ========================')
+      console.log(server)
+      if (i < 2) await sleep(2000)
+    }
+  }
+
+  const handleDeleteServer = async () => {
+    deleteServer()
+  }
+
   useEffect(() => {
-    loadServers()
+    loadServer()
   }, [])
 
   return (
@@ -94,7 +115,7 @@ export default function MizbanServer() {
 
         <div className="flex gap-4">
           <button
-            onClick={loadServers}
+            onClick={loadServer}
             disabled={loading}
             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >

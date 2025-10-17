@@ -15,7 +15,6 @@ export default function MizbanConfig() {
       try {
         await getServerConfig()
         setMizbanCloudApiKey(serverConfig?.mizbanCloudApiKey || '')
-
       } catch (err) {
         console.error('Error loading config:', err)
       } finally {
@@ -24,7 +23,7 @@ export default function MizbanConfig() {
     }
 
     loadConfig()
-  }, [serverConfig, getServerConfig, updateMizbanCloudApiKey])
+  }, [getServerConfig, updateMizbanCloudApiKey])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

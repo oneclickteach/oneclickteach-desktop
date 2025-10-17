@@ -142,7 +142,7 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     return stdout
   })
 
-  //
+  // Vagrant IPC handlers
   handleIPC('config-vagrant', async (_e) => {
     const vagrantSetup = new VagrantSetup()
     await vagrantSetup.setup()
@@ -151,7 +151,7 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     return
   })
 
-  //
+  // Config Infrastructure Handelers
   handleIPC('config-infrastructure', async (_e) => {
     const infrastructureSetup = new InfrastructureSetup()
     await infrastructureSetup.setup()
